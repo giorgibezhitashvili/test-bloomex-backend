@@ -8,7 +8,7 @@ class App implements AppInterface
 {
     public function __construct()
     {
-        new Database();
+        Database::getInstance();
     }
 
     public function apiRoutesInit()

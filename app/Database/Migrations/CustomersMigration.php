@@ -1,10 +1,8 @@
 <?php
 namespace App\Database\Migrations;
 
+use App\Database\Database;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Support\Facades\Schema;
 class CustomersMigration extends Migration
 {
     /**
@@ -12,13 +10,19 @@ class CustomersMigration extends Migration
      */
     public function up()
     {
-        Capsule::schema()->create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->double('shared_amount')->default(0);
-            $table->timestamps();
-        });
+        $db = Database::getInstance();
+        $db->query(
+            "CREATE TABLE `customers` (
+              `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+              `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+              `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+              `shared_amount` double NOT NULL DEFAULT '0',
+              `created_at` timestamp NULL DEFAULT NULL,
+              `updated_at` timestamp NULL DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `customers_email_unique` (`email`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+        );
     }
 
     /**
@@ -26,6 +30,5 @@ class CustomersMigration extends Migration
      */
     public function down()
     {
-        Capsule::schema()->dropIfExists('customers');
     }
 }

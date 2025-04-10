@@ -2,9 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\Customer;
 use App\Services\CustomerService;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 class CustomersController
 {
@@ -47,5 +45,4 @@ class CustomersController
         $this->customerService->resetCustomers();
         return ['success' => true];
     }
-
 }

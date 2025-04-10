@@ -2,39 +2,42 @@
 
 namespace App\Services;
 
+use App\Database\Database;
 use App\Interfaces\CustomerServiceInterface;
-use App\Models\Customer;
 
 class CustomerService implements CustomerServiceInterface
 {
+    private $db;
+    public function __construct()
+    {
+        $this->db = Database::getInstance();
+    }
     public function getCustomers(){
-        return Customer::all();
+        return $this->db->query("SELECT * FROM customers");
     }
 
     public function getCustomersCount(){
-        return Customer::count();
+        $res = $this->db->query("SELECT COUNT(*) as cnt FROM customers", [], true);
+        return $res['cnt'];
     }
 
     public function addCustomer($data){
-        $customer = new Customer();
-        $customer->name = $data['name'];
-        $customer->email = $data['email'];
-        $customer->save();
 
+        $res =$this->db->query("INSERT INTO customers (name, email) VALUES (:name, :email)", [":name" => $data['name'], ":email" => $data['email']]);
         $this->updateCustomersShareAmount();
-        return Customer::find($customer->id);
+        return $res;
     }
 
     public function updateCustomersShareAmount(){
         $customersCount = $this->getCustomersCount();
-        Customer::query()->update(['shared_amount' => 100 / $customersCount]);
+        return $this->db->query("UPDATE customers SET shared_amount = :amount", ['amount' => 100 / $customersCount]);
     }
 
     public function resetCustomers(){
-        Customer::query()->delete();
+        return $this->db->query("DELETE FROM customers");
     }
 
     public function getCustomerByEmail($email){
-        return Customer::query()->where('email', $email)->first();
+        return $this->db->query("SELECT * FROM customers WHERE email = :email", ['email' => $email], true);
     }
 }

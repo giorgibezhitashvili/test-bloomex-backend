@@ -2,7 +2,8 @@
     "require": {
         "illuminate/database": "^12.7",
         "phroute/phroute": "^2.2",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {
